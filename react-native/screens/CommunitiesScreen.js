@@ -29,8 +29,8 @@ const CommunitiesScreen = ({ navigation }) => {
       />
 
       {/* Add Community Button */}
-      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('AddCommunityScreen')}>
-        <Text style={styles.addButtonText}>➕ Add Community</Text>
+      <TouchableOpacity style={styles.addButton} onPress={() => navigation.navigate('CREATE_COMMUNITY_SCREEN')}>
+        <Text style={styles.addButtonText}>+ Add Community</Text>
       </TouchableOpacity>
     </View>
   );

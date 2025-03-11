@@ -27,12 +27,25 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
+
+  const signOut = async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (error) throw new Error(error.message);
+
+    alert('Sign out successfully!!!');
+  }
+
   return (
-    <AuthContext.Provider value={{ session, loading }}>
+    <AuthContext.Provider value={{ session, loading, signOut }}>
       {children}
     </AuthContext.Provider>
   );
 };
+
+const signOut = async () => {
+  await supabase.auth.signOut()
+}
 
 // 🔹 Custom Hook: useAuth (for easy access to authentication state)
 export const useAuth = () => {

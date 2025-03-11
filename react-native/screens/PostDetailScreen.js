@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet, View, Text, Image, TouchableOpacity, FlatList, TextInput, ScrollView, Share
 } from 'react-native';
@@ -8,7 +8,7 @@ const postData = {
   id: '1',
   coverImage: 'https://source.unsplash.com/800x400/?technology',
   title: 'Understanding React Native & Supabase',
-  description: 'React Native with Supabase provides an efficient backend solution...',
+  content: 'React Native with Supabase provides an efficient backend solution...',
   user: {
     name: 'John Doe',
     email: 'john@example.com',
@@ -26,11 +26,30 @@ const postData = {
   ],
 };
 
-const PostDetailScreen = () => {
-  const [post, setPost] = useState(postData);
+const PostDetailScreen = ({ route }) => {
+  const { id } = route.params;
+  const [post, setPost] = useState(null);
   const [newComment, setNewComment] = useState('');
   const [replyText, setReplyText] = useState('');
   const [replyToCommentId, setReplyToCommentId] = useState(null);
+
+
+  const fetchPostById = async () => {
+    const { data, error } = await supabase
+      .from('posts')
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (error) throw new Error(error.message);
+
+    setPost(data)
+  };
+
+  useEffect(() => {
+    fetchPostById()
+  }), []
+
 
   // Function to handle likes
   const handleLike = () => {
@@ -79,7 +98,7 @@ const PostDetailScreen = () => {
   const handleShare = async () => {
     try {
       const result = await Share.share({
-        message: `Check out this post: ${post.title}\n\n${post.description}\n\nRead more: https://example.com/post/${post.id}`,
+        message: `Check out this post: ${post.title}\n\n${post.content}\n\nRead more: https://example.com/post/${post.id}`,
       });
 
       if (result.action === Share.sharedAction) {
@@ -99,7 +118,7 @@ const PostDetailScreen = () => {
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       {/* 📸 Cover Image */}
-      <Image source={{ uri: post.coverImage }} style={styles.coverImage} />
+      <Image source={{ uri: post.image_url }} style={styles.coverImage} />
 
       {/* 📝 Post Info */}
       <View style={styles.content}>
@@ -109,12 +128,12 @@ const PostDetailScreen = () => {
         <View style={styles.userInfo}>
           <Image source={{ uri: post.user.image }} style={styles.userImage} />
           <View>
-            <Text style={styles.userName}>{post.user.name}</Text>
-            <Text style={styles.userEmail}>{post.user.email}</Text>
+            <Text style={styles.userName}>{post?.name}</Text>
+            <Text style={styles.userEmail}>{post?.email}</Text>
           </View>
         </View>
 
-        <Text style={styles.description}>{post.description}</Text>
+        <Text style={styles.content}>{post.content}</Text>
 
         {/* 👍 Like & 👎 Dislike Buttons */}
         <View style={styles.actions}>
@@ -206,7 +225,7 @@ const styles = StyleSheet.create({
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 10 },
   userInfo: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   userImage: { width: 40, height: 40, borderRadius: 20, marginRight: 10 },
-  description: { fontSize: 16, color: '#333', marginBottom: 15 },
+  content: { fontSize: 16, color: '#333', marginBottom: 15 },
   shareContainer: { alignItems: 'center', marginBottom: 15 },
   shareButton: { backgroundColor: '#007bff', padding: 10, borderRadius: 8 },
   shareText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },

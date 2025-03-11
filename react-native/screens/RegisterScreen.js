@@ -23,7 +23,7 @@ const RegisterScreen = ({ navigation }) => {
 
       console.log("Start Submitting....")
       const { data, error } = await supabase.auth.signUp({
-        email: inputValues.email,
+        email: inputValues.email.toLowerCase(),
         password: inputValues.password
       })
 
@@ -34,7 +34,7 @@ const RegisterScreen = ({ navigation }) => {
       console.log(data, "result");
       setInputValues(INITIAL_STATE);
 
-      navigation.navigate("Home")
+      navigation.navigate('HOME_SCREEN')
 
     } catch (error) {
       setError(error.message)
@@ -100,7 +100,7 @@ const RegisterScreen = ({ navigation }) => {
       {/* 🔗 Already have an account? Login */}
       <View style={styles.footer}>
         <Text style={styles.footerText}>Already have an account?</Text>
-        <TouchableOpacity onPress={() => navigation.navigate("login")}>
+        <TouchableOpacity onPress={() => navigation.navigate("LOGIN_SCREEN")}>
           <Text style={styles.footerLink}> Login</Text>
         </TouchableOpacity>
       </View>

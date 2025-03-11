@@ -39,8 +39,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     })
   }
 
-  const signOut = () => {
-    supabase.auth.signOut()
+  const signOut = async () => {
+    await supabase.auth.signOut()
   }
 
   return (

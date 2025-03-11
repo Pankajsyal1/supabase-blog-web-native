@@ -1,65 +1,34 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity } from 'react-native';
+import { supabase } from '../supabase';
 
-// Sample Data for Posts
-const posts = [
-  {
-    id: '1',
-    user: {
-      name: 'John Doe',
-      email: 'john@example.com',
-      image: 'https://randomuser.me/api/portraits/men/1.jpg',
-    },
-    title: 'Exploring React Native 🚀',
-    description: 'React Native is a great framework for building mobile apps.',
-    likes: 120,
-    comments: 45,
-  },
-  {
-    id: '2',
-    user: {
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      image: 'https://randomuser.me/api/portraits/women/2.jpg',
-    },
-    title: 'Understanding Supabase 🔥',
-    description: 'Supabase is a great open-source Firebase alternative!',
-    likes: 90,
-    comments: 30,
-  },
-  {
-    id: '3',
-    user: {
-      name: 'Michael Johnson',
-      email: 'michael@example.com',
-      image: 'https://randomuser.me/api/portraits/men/3.jpg',
-    },
-    title: 'Using Expo with React Native 🎨',
-    description: 'Expo simplifies React Native development a lot!',
-    likes: 75,
-    comments: 20,
-  },
-  {
-    id: '4',
-    user: {
-      name: 'Lisa White',
-      email: 'lisa@example.com',
-      image: 'https://randomuser.me/api/portraits/women/4.jpg',
-    },
-    title: 'State Management in React ⚛️',
-    description: 'Using Redux, Zustand, or Context API for state management.',
-    likes: 200,
-    comments: 80,
-  },
-];
 
 // Home Screen Component
-const HomeScreen = () => {
+const HomeScreen = ({ navigation }) => {
+  const [posts, setPosts] = useState([])
+
+  const fetchPost = async () => {
+    const { data, error } = await supabase.rpc("get_posts_with_counts");
+    if (error) throw new Error(error.message);
+    setPosts(data)
+  }
+
+  useEffect(() => {
+    fetchPost()
+  }, [])
+
+  console.log(posts, "pots----")
+
   return (
     <View style={styles.container}>
       {/* 🏠 Screen Title */}
-      <Text style={styles.title}>Recent Posts</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+        <Text style={styles.title}>Recent Posts</Text>
+        <TouchableOpacity onPress={() => navigation.navigate("CREATE_POST_SCREEN")}>
+          <Text style={{ fontSize: 12 }}>ADD NEW Post</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* 📌 Posts Grid Layout */}
       <FlatList
@@ -80,28 +49,29 @@ const PostCard = ({ post }) => {
   return (
     <TouchableOpacity
       style={styles.postCard}
-      onPress={() => navigation.navigate('postDetail')}
+      onPress={() => navigation.navigate('POST_DETAIL_SCREEN', { id: post.id })}
     >
       {/* 👤 User Info */}
       <View style={styles.userInfo}>
-        <Image source={{ uri: post.user.image }} style={styles.userImage} />
+        <Image source={{ uri: post.avatar_url }} style={styles.userImage} />
         <View>
-          <Text style={styles.userName}>{post.user.name}</Text>
-          <Text style={styles.userEmail}>{post.user.email}</Text>
+          <Text style={styles.userName}>{post.name}</Text>
+          <Text style={styles.userEmail}>{post.email}</Text>
         </View>
       </View>
 
+      <Image source={{ uri: post.image_url }} style={{ width: '100%', height: 150, borderWidth: 1, borderColor: '#eee', borderRadius: 8, marginVertical: 12 }} />
       {/* 📝 Post Content */}
       <Text style={styles.postTitle}>{post.title}</Text>
-      <Text style={styles.postDescription} numberOfLines={2}>{post.description}</Text>
+      <Text style={styles.postDescription} numberOfLines={2}>{post.content}</Text>
 
       {/* ❤️ Like & 💬 Comment Count */}
       <View style={styles.postFooter}>
         <TouchableOpacity>
-          <Text style={styles.likeCount}>❤️ {post.likes}</Text>
+          <Text style={styles.likeCount}>❤️ {post.like_count}</Text>
         </TouchableOpacity>
         <TouchableOpacity>
-          <Text style={styles.commentCount}>💬 {post.comments}</Text>
+          <Text style={styles.commentCount}>💬 {post.comment_count}</Text>
         </TouchableOpacity>
       </View>
     </TouchableOpacity>

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { supabase } from '../supabase';
 
 const LoginScreen = ({ navigation }) => {
   const [inputValues, setInputValues] = useState({
@@ -7,11 +8,24 @@ const LoginScreen = ({ navigation }) => {
     password: ""
   })
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!inputValues.email || !inputValues.password) {
       alert("Please enter the email and password!!!")
       return;
     }
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: inputValues.email.toLowerCase(),
+      password: inputValues.password
+    })
+
+    if (error) return alert("Error" + " " + error.message);
+    console.log(data);
+    alert("Success");
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "HOME_SCREEN" }],
+    });
 
     console.log(inputValues, "submitting")
   }
@@ -47,9 +61,9 @@ const LoginScreen = ({ navigation }) => {
 
       {/* 🔗 Forgot Password & Signup */}
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => navigation.navigate("forgotPassword")}><Text style={styles.footerText}>Forgot Password?</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("FORGOT_PASSWORD_SCREEN")}><Text style={styles.footerText}>Forgot Password?</Text></TouchableOpacity>
         <Text style={styles.footerText}> | </Text>
-        <TouchableOpacity onPress={() => navigation.navigate("register")}><Text style={styles.footerText}>Sign Up</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("REGISTER_SCREEN")}><Text style={styles.footerText}>Sign Up</Text></TouchableOpacity>
       </View>
     </View>
   );

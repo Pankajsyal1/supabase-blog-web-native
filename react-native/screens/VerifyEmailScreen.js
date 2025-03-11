@@ -20,7 +20,7 @@ const VerifyEmailScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       {/* 🔙 Back to Login */}
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("register")}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate("REGISTER_SCREEN")}>
         <Text style={styles.backText}>Back to Login</Text>
       </TouchableOpacity>
     </View>
