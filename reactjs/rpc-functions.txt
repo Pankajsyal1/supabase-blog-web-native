@@ -1,0 +1,10 @@
+Functions as RPC
+“A single resource can be the equivalent of a database function, with the power to abstract state changes over any number of storage items” – Roy T. Fielding
+
+Functions can perform any operation allowed by PostgreSQL (read data, modify data, raise errors, and even DDL operations). Every function in the exposed schema and accessible by the active database role is executable under the /rpc prefix.
+
+If they return table types, functions can:
+
+Use all the same read filters as Tables and Views (horizontal/vertical filtering, counts, limits, etc.).
+
+Use Resource Embedding, if the returned table type has relationships to other tables.
