@@ -1,6 +1,7 @@
 import { User } from "@supabase/supabase-js";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { supabase } from '../supabase'
+import toast from "react-hot-toast";
 
 interface AuthContextType {
   user: User | null,
@@ -37,10 +38,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await supabase.auth.signInWithOAuth({
       provider: 'github'
     })
+   await toast.success("You have been signed in successfully! 🎉");
   }
 
   const signOut = async () => {
-    await supabase.auth.signOut()
+    await supabase.auth.signOut();
+    await toast.success("You have been signed out successfully! 👋");
   }
 
   return (

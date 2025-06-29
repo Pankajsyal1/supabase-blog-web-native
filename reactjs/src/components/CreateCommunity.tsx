@@ -1,20 +1,25 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
 import { useNavigate } from "react-router";
 import { supabase } from "../supabase";
+import { COLLECTIONS } from "../utils/collections";
+import { useAuth } from "../context/AuthContext";
+import { useState } from "react";
+import { toast } from "react-hot-toast/headless";
 
 interface CommunityInput {
   name: string;
   description: string;
+  user_id: string;
 }
 const createCommunity = async (community: CommunityInput) => {
-  const { error, data } = await supabase.from("communities").insert(community);
+  const { error, data } = await supabase.from(COLLECTIONS.COMMUNITIES).insert(community);
 
   if (error) throw new Error(error.message);
   return data;
 };
 
 export const CreateCommunity = () => {
+  const { user } = useAuth();
   const [name, setName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const navigate = useNavigate();
@@ -23,6 +28,7 @@ export const CreateCommunity = () => {
   const { mutate, isPending, isError } = useMutation({
     mutationFn: createCommunity,
     onSuccess: () => {
+      toast.success("Community created successfully!");
       queryClient.invalidateQueries({ queryKey: ["communities"] });
       navigate("/communities");
     },
@@ -30,7 +36,7 @@ export const CreateCommunity = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate({ name, description });
+    mutate({ name, description, user_id: user!.id });
   };
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl mx-auto space-y-4">

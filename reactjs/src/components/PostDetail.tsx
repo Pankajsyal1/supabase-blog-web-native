@@ -3,15 +3,16 @@ import { supabase } from "../supabase";
 import { Post } from "./PostList";
 import { LikeButton } from "./LikeButton";
 import { CommentSection } from "./CommentSection";
+import { COLLECTIONS } from "../utils/collections";
 
 interface Props {
-  postId: number;
+  postId: string;
 }
 
-const fetchPostById = async (id: number): Promise<Post> => {
+const fetchPostById = async (id: string): Promise<Post> => {
 
   const { data, error } = await supabase
-    .from('posts')
+    .from(COLLECTIONS.POSTS)
     .select("*")
     .eq("id", id)
     .single();

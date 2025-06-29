@@ -3,18 +3,19 @@ import { Comment } from "./CommentSection";
 import { useAuth } from "../context/AuthContext";
 import { supabase } from "../supabase";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { COLLECTIONS } from "../utils/collections";
 
 interface Props {
   comment: Comment & {
     children?: Comment[];
   };
-  postId: number;
+  postId: string;
 }
 
 const createReply = async (
   replyContent: string,
-  postId: number,
-  parentCommentId: number,
+  postId: string,
+  parentCommentId: string,
   userId?: string,
   author?: string
 ) => {
@@ -22,7 +23,7 @@ const createReply = async (
     throw new Error("You must be logged in to reply.");
   }
 
-  const { error } = await supabase.from("comments").insert({
+  const { error } = await supabase.from(COLLECTIONS.COMMENTS).insert({
     post_id: postId,
     content: replyContent,
     parent_comment_id: parentCommentId,

@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Post } from "./PostList";
 import { supabase } from "../supabase";
 import PostItem from "./PostItem";
+import { COLLECTIONS } from "../utils/collections";
 
 interface Props {
   communityId: number;
@@ -17,8 +18,8 @@ export const fetchCommunityPost = async (
   communityId: number
 ): Promise<PostWithCommunity[]> => {
   const { data, error } = await supabase
-    .from("posts")
-    .select("*, communities(name)")
+    .from(COLLECTIONS.POSTS)
+    .select(`*, communities(name)`)
     .eq("community_id", communityId)
     .order("created_at", { ascending: false });
 

@@ -1,31 +1,35 @@
 import { ChangeEvent, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../supabase";
 import { useAuth } from "../context/AuthContext";
 import { Community, fetchCommunities } from "./CommunityList";
+import { COLLECTIONS } from "../utils/collections";
+import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 interface PostInput {
   title: string;
   content: string;
   avatar_url: string | null;
   community_id?: number | null;
+  user_id: string;
 }
 
 const createPost = async (post: PostInput, imageFile: File) => {
   const filePath = `${post.title}-${Date.now()}-${imageFile.name}`;
 
   const { error: uploadError } = await supabase.storage
-    .from("post-images")
+    .from(COLLECTIONS.POST_IMAGES)
     .upload(filePath, imageFile);
 
   if (uploadError) throw new Error(uploadError.message);
 
   const { data: publicURLData } = supabase.storage
-    .from("post-images")
+    .from(COLLECTIONS.POST_IMAGES)
     .getPublicUrl(filePath);
 
   const { data, error } = await supabase
-    .from("posts")
+    .from(COLLECTIONS.POSTS)
     .insert({ ...post, image_url: publicURLData.publicUrl });
 
   if (error) throw new Error(error.message);
@@ -37,7 +41,8 @@ export const CreatePost = () => {
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [communityId, setCommunityId] = useState<number | null>(null);
-
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const { user } = useAuth();
@@ -51,6 +56,11 @@ export const CreatePost = () => {
     mutationFn: (data: { post: PostInput; imageFile: File }) => {
       return createPost(data.post, data.imageFile);
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["communities"] });
+      toast.success("Post created successfully!");
+      navigate("/");
+    },
   });
 
   const handleSubmit = (event: React.FormEvent) => {
@@ -62,9 +72,12 @@ export const CreatePost = () => {
         content,
         avatar_url: user?.user_metadata.avatar_url || null,
         community_id: communityId,
+        user_id: user!.id, // Ensure user ID is included
       },
       imageFile: selectedFile,
     });
+
+
   };
 
   const handleCommunityChange = (e: ChangeEvent<HTMLSelectElement>) => {

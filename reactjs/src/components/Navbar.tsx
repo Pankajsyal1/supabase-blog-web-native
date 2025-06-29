@@ -14,7 +14,8 @@ export const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Brand */}
           <NavLink to="/" className="font-mono text-xl font-bold text-white">
-            forum<span className="text-purple-500">.app</span>
+            {/* forum<span className="text-purple-500">.app</span> */}
+            <img src="/logo.png" alt="Logo" width={120} />
           </NavLink>
 
           {/* Desktop Menu */}

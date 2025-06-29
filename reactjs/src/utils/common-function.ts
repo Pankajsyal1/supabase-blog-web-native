@@ -1,0 +1,1 @@
+console.log("utils/common-function.ts loaded");

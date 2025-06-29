@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "../supabase";
 import { Link } from "react-router";
+import { COLLECTIONS } from "../utils/collections";
 
 export interface Community {
   id: number;
@@ -10,7 +11,7 @@ export interface Community {
 }
 export const fetchCommunities = async (): Promise<Community[]> => {
   const { data, error } = await supabase
-    .from("communities")
+    .from(COLLECTIONS.COMMUNITIES)
     .select("*")
     .order("created_at", { ascending: false });
 
@@ -23,6 +24,7 @@ export const CommunityList = () => {
     queryKey: ["communities"],
     queryFn: fetchCommunities,
   });
+
 
   if (isLoading)
     return <div className="text-center py-4">Loading communities...</div>;

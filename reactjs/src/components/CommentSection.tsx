@@ -3,20 +3,21 @@ import { useAuth } from "../context/AuthContext";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../supabase";
 import { CommentItem } from "./CommentItem";
+import { COLLECTIONS } from "../utils/collections";
 
 interface Props {
-  postId: number;
+  postId: string;
 }
 
 interface NewComment {
   content: string;
-  parent_comment_id?: number | null;
+  parent_comment_id?: string | null;
 }
 
 export interface Comment {
-  id: number;
-  post_id: number;
-  parent_comment_id: number | null;
+  id: string;
+  post_id: string;
+  parent_comment_id: string | null;
   content: string;
   user_id: string;
   created_at: string;
@@ -25,7 +26,7 @@ export interface Comment {
 
 const createComment = async (
   newComment: NewComment,
-  postId: number,
+  postId: string,
   userId?: string,
   author?: string
 ) => {
@@ -33,7 +34,7 @@ const createComment = async (
     throw new Error("You must be logged in to comment.");
   }
 
-  const { error } = await supabase.from("comments").insert({
+  const { error } = await supabase.from(COLLECTIONS.COMMENTS).insert({
     post_id: postId,
     content: newComment.content,
     parent_comment_id: newComment.parent_comment_id || null,
@@ -44,9 +45,9 @@ const createComment = async (
   if (error) throw new Error(error.message);
 };
 
-const fetchComments = async (postId: number): Promise<Comment[]> => {
+const fetchComments = async (postId: string): Promise<Comment[]> => {
   const { data, error } = await supabase
-    .from("comments")
+    .from(COLLECTIONS.COMMENTS)
     .select("*")
     .eq("post_id", postId)
     .order("created_at", { ascending: true });
@@ -94,7 +95,7 @@ export const CommentSection = ({ postId }: Props) => {
   const buildCommentTree = (
     flatComments: Comment[]
   ): (Comment & { children?: Comment[] })[] => {
-    const map = new Map<number, Comment & { children?: Comment[] }>();
+    const map = new Map<string, Comment & { children?: Comment[] }>();
     const roots: (Comment & { children?: Comment[] })[] = [];
 
     flatComments.forEach((comment) => {
