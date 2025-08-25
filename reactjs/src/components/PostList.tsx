@@ -11,6 +11,8 @@ export interface Post {
   avatar_url?: string;
   like_count?: number;
   comment_count?: number;
+  user_id: string;
+  community_id: string;
 }
 
 const fetchPosts = async (): Promise<Post[]> => {
@@ -36,7 +38,7 @@ const PostList = () => {
   console.log(data);
 
   return (
-    <div className="grid xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 sm:gap-4 md:gap-6">
+    <div className="grid xl:grid-cols-3 lg:grid-cols-3 sm:grid-cols-2 xs:grid-cols-1 sm:gap-4 md:gap-6">
       {data?.map((post, key) => (
         <PostItem post={post} key={key} />
       ))}

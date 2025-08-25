@@ -131,7 +131,7 @@ export const CommentSection = ({ postId }: Props) => {
       <h3 className="text-2xl font-semibold mb-4">Comments</h3>
       {/* Create Comment Section */}
       {user ? (
-        <form onSubmit={handleSubmit} className="mb-4">
+        <form onSubmit={handleSubmit} className="mb-8">
           <textarea
             value={newCommentText}
             onChange={(e) => setNewCommentText(e.target.value)}

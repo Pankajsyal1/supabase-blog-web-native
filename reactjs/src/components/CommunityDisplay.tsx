@@ -48,7 +48,7 @@ export const CommunityDisplay = ({ communityId }: Props) => {
       </h2>
 
       {data && data.length > 0 ? (
-        <div className="flex flex-wrap gap-6 justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
           {data.map((post) => (
             <PostItem key={post.id} post={post} />
           ))}
