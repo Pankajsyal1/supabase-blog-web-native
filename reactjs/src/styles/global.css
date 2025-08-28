@@ -1,4 +1,8 @@
-@import 'tailwindcss';
+@import "tailwindcss";
+
+body {
+  font-family: "TASA Orbiter", sans-serif;
+}
 
 @layer utilities {
   @keyframes blink {

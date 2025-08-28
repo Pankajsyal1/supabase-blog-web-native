@@ -16,14 +16,23 @@ const PostItem = ({ post }: Props) => {
       {/* Pulsing gradient background on hover */}
       <div className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 blur-md opacity-0 group-hover:opacity-60 group-hover:animate-pulse-gradient transition-opacity duration-500 pointer-events-none"></div>
 
-      <Link to={`/post/${post.id}`} className="block relative z-10">
+      {/* Shimmer effect overlay when loading (example, always visible for demo) */}
+      <div className="absolute inset-0 z-20 pointer-events-none">
+        <div className="h-full w-full bg-gradient-to-r from-transparent via-purple-300/20 to-transparent animate-shimmer rounded-3xl" />
+      </div>
+
+      <Link to={`/post/${post.id}`} className="block relative z-30">
         <div className="p-4 flex flex-col h-full">
           {/* Blog Image */}
-          <img
-            className="w-full h-48 object-cover rounded-2xl mb-4 transition-all duration-300 group-hover:brightness-110 group-hover:translate-y-[-4px]"
-            src={post.image_url}
-            alt={post.title}
-          />
+          <div className="relative">
+            <img
+              className="w-full h-48 object-cover rounded-2xl mb-4 transition-all duration-300 group-hover:brightness-110 group-hover:translate-y-[-4px]"
+              src={post.image_url}
+              alt={post.title}
+            />
+            {/* Shimmer for image */}
+            <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-gray-700/10 via-purple-400/10 to-gray-700/10 animate-shimmer" />
+          </div>
 
           {/* Title */}
           <h2 className="text-xl font-bold text-white mb-3 line-clamp-2 tracking-wide">
@@ -92,21 +101,20 @@ const PostItem = ({ post }: Props) => {
 
           {/* Footer: Avatar, Date, Likes, and Comments */}
 
-
           <div className="flex items-center justify-between border-t border-gray-800 pt-4">
             {post.avatar_url ? (
               <>
-              <img
-                className="w-10 h-10 rounded-full object-cover border-2 border-purple-400 transition-transform duration-300 group-hover:rotate-6"
-                src={post.avatar_url}
-                alt="Author avatar"
+                <img
+                  className="w-10 h-10 rounded-full object-cover border-2 border-purple-400 transition-transform duration-300 group-hover:rotate-6"
+                  src={post.avatar_url}
+                  alt="Author avatar"
                 />
                 {post.author_name && (
                   <span className="text-sm font-semibold text-gray-300">
                     {post.author_name}
                   </span>
                 )}
-                </>
+              </>
             ) : (
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-indigo-700" />
             )}

@@ -7,13 +7,14 @@ import CreateCommunityPage from "./pages/CreateCommunityPage";
 import CommunitiesPage from "./pages/CommunitiesPage";
 import CommunityPage from "./pages/CommunityPage";
 import EditPostPage from "./pages/EditPostPage";
+import Footer from "./components/Footer";
 
 
 function App() {
   return (
-    <div className="min-h-screen bg-black text-gray-100 transition-opacity duration-700 pt-20">
-      <Navbar />
-      <div className="max-w-5xl container mx-auto px-4 pb-6">
+    <div className="bg-black text-gray-100 transition-opacity duration-700 pt-10 flex flex-col min-h-screen">
+      <header><Navbar /></header>
+      <main className="max-w-5xl container mx-auto px-4 pb-6 flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/create" element={<CreatePostPage />} />
@@ -23,7 +24,8 @@ function App() {
           <Route path="/communities" element={<CommunitiesPage />} />
           <Route path="/community/:id" element={<CommunityPage />} />
         </Routes>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }
